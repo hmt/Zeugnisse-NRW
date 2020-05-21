@@ -1,0 +1,19 @@
+name: Continuous Release
+on:
+  push:
+  pull_request:
+jobs:
+  create-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: mkdir zip
+      - run: for i in GE/ GYM/ GymOB/ HS/ Inklusion/ RS/ SK/; do echo zip --q ./zip/${i%/}.$(date +'%d-%m-%Y').${{ github.run_number }}.zip "$i"; done
+      - name: show dir
+        run: ls zip
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./zip/*"
+          allowUpdates: true
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
